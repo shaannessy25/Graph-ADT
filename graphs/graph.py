@@ -22,7 +22,8 @@ class Vertex(object):
         Parameters:
         vertex_obj (Vertex): An instance of Vertex to be stored as a neighbor.
         """
-        pass
+        neighor_id = vertex_obj.__id
+        self.__neighbors_dict[neighor_id] = vertex_obj
 
     def __str__(self):
         """Output the list of neighbors of this vertex."""
@@ -66,7 +67,8 @@ class Graph:
         Returns:
         Vertex: The new vertex object.
         """
-        pass
+        new_vertex = Vertex(vertex_id)
+        self.__vertex_dict[vertex_id] = new_vertex
         
 
     def get_vertex(self, vertex_id):
@@ -85,7 +87,8 @@ class Graph:
         vertex_id1 (string): The unique identifier of the first vertex.
         vertex_id2 (string): The unique identifier of the second vertex.
         """
-        pass
+        new_edge = vertex_id1 + vertex_id2
+        
         
     def get_vertices(self):
         """
@@ -195,4 +198,37 @@ class Graph:
         Returns:
         list<string>: All vertex ids that are `target_distance` away from the start vertex
         """
-        pass
+        
+        if not self.contains_id(start_id):
+            raise KeyError("Vertices not in graph")
+
+        starting_vertex_obj = self.get_vertex(start_id)
+
+        steps = -1
+
+        vertex_distances = dict()
+
+        queue = deque();
+        queue.append(starting_vertex_obj)
+
+        while steps < target_distance:
+            neighbors = list()
+
+            while len(queue) > 0:
+                current_vertex_obj = queue.popleft()
+                current_vertex_id = current_vertex_obj.get_id()
+
+                if current_vertex_id not in vertex_distances:
+                    vertex_distances[current_vertex_id] = steps + 1
+
+                    neighbors.extend(current_vertex_obj.get_neighbors())
+            
+            for neighbor in neighbors:
+                queue.append(neighbor)
+            
+            steps = steps + 1
+
+            return [
+            current_vertex_id for current_vertex_id in vertex_distances if
+            vertex_distances[current_vertex_id] == target_distance
+            ]
