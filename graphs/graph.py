@@ -232,3 +232,64 @@ class Graph:
             current_vertex_id for current_vertex_id in vertex_distances if
             vertex_distances[current_vertex_id] == target_distance
             ]
+    def is_bipartite(self, vertex_id):
+        """ Return True if the graph is bipartite, and False otherwise. """
+        vertex = self.get_vertex(vertex_id)
+
+        queue = deque()
+        queue.append(vertex)
+
+        visited = set()
+
+        red = set()
+        blue = set()
+
+        i = 0
+
+        # initial vertex 
+        red.add(vertex)
+
+        while queue:
+
+            # depending on the counter, set the appropriate sets to be used.
+            color_set, opp_set = (red, blue) if i % 2 == 0 else (blue, red)
+
+            # iterate the number of times that there are items in the queue
+            for _ in range(len(queue)):
+                # grabs the next vertex 
+                vertex = queue.popleft()
+
+                # add it to the visited set, so we do not check this vertex again if cyclical.
+                visited.add(vertex)
+                
+                # go through each neighbor from the vertex and add it into the corresponding set.
+                for neighbor in vertex.get_neighbors():
+
+                    # only add the neighboring vertex if it has not been visited
+                    if neighbor not in visited:
+                        queue.append(neighbor)
+                    
+                    # check if the neighbor is in the same color set as the current vertex. if it is, return False
+                    if neighbor in color_set:
+                        return False
+
+                    # add the neighboring vertexes into the opposite color set
+                    opp_set.add(neighbor)
+
+            i += 1
+
+        return True
+
+
+    def get_connected_components(self):
+        """
+        Return a list of all connected components, with each connected component
+        represented as a list of vertex ids.
+        """
+        pass
+    
+    def find_path_dfs_iter(self, start_id, target_id):
+        """
+        Use DFS with a stack to find a path from start_id to target_id.
+        """
+        pass
